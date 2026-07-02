@@ -90,11 +90,12 @@ const cases: ServiceCase[] = [
   },
 ];
 
-const laneCards = [
-  ["Intake", "Classifies requests, detects framework, scopes deliverables."],
-  ["Evidence", "Finds source artifacts across docs, tickets, exports, and logs."],
-  ["Draft", "Writes answers, memos, source notes, and customer-ready packets."],
-  ["QA", "Routes uncertainty to the right human and locks the audit trail."],
+const lanes = [
+  ["Intake", "Classify ask and define deliverable"],
+  ["Evidence", "Find source-backed artifacts"],
+  ["Draft", "Write answer packet with citations"],
+  ["Review", "Route gaps to human QA"],
+  ["Ship", "Deliver customer-ready output"],
 ];
 
 const marketMoves = [
@@ -119,8 +120,8 @@ const plans: Plan[] = [
     name: "Paid Pilot",
     price: 1500,
     cadence: "one packet",
-    description: "The fastest way to unblock one enterprise review and prove value.",
-    bestFor: "First questionnaire or urgent audit evidence ask",
+    description: "Turn one urgent review into a delivered packet in 48 hours.",
+    bestFor: "First questionnaire or urgent audit ask",
     includes: [
       "48-hour security questionnaire turnaround",
       "Source-backed answer packet",
@@ -133,7 +134,7 @@ const plans: Plan[] = [
     name: "Managed Ops",
     price: 8000,
     cadence: "per month",
-    description: "A monthly compliance desk for teams with repeat enterprise reviews.",
+    description: "A monthly compliance desk for repeat enterprise reviews.",
     bestFor: "10-30 monthly requests",
     includes: [
       "Unlimited intake queue",
@@ -147,8 +148,8 @@ const plans: Plan[] = [
     name: "Enterprise Desk",
     price: 18000,
     cadence: "per month",
-    description: "High-volume service operations with custom workflow and SLA controls.",
-    bestFor: "Revenue teams with heavy enterprise sales motion",
+    description: "High-volume service operations with custom workflow controls.",
+    bestFor: "Heavy enterprise sales motion",
     includes: [
       "Priority SLA",
       "Custom evidence graph",
@@ -198,6 +199,9 @@ export default function App() {
     [],
   );
 
+  const averageConfidence = Math.round(
+    cases.reduce((total, item) => total + item.confidence, 0) / cases.length,
+  );
   const manualCost = requestCount * manualHours * loadedCost;
   const auditlaneCost = requestCount * 620;
   const savings = manualCost - auditlaneCost;
@@ -238,143 +242,174 @@ export default function App() {
 
   return (
     <main className="page-shell">
-      <section className="product-hero" aria-label="Auditlane product">
-        <nav className="nav">
+      <section className="command-screen" id="top" aria-label="Auditlane product console">
+        <aside className="side-rail">
           <a className="brand" href="#top" aria-label="Auditlane home">
             <span className="brand-icon">A</span>
             <span>
               <strong>Auditlane</strong>
-              <small>AI-native compliance operations</small>
+              <small>Service OS</small>
             </span>
           </a>
-          <div className="nav-links" aria-label="Page sections">
+
+          <nav className="rail-nav" aria-label="Main sections">
             <a href="#product">Product</a>
-            <a href="#roi">ROI</a>
-            <a href="#market">Market</a>
-            <a href="#playbook">Playbook</a>
+            <a href="#checkout">Pricing</a>
+            <a href="#portal">Portal</a>
+            <a href="#playbook">Launch</a>
+          </nav>
+
+          <div className="rail-metric">
+            <span>Work in queue</span>
+            <strong>{money(weeklyRevenue)}</strong>
           </div>
-          <button className="nav-cta" onClick={() => startCheckout("pilot")} type="button">
+          <div className="rail-metric">
+            <span>Source confidence</span>
+            <strong>{averageConfidence}%</strong>
+          </div>
+          <button className="rail-button" onClick={() => startCheckout("pilot")} type="button">
             Book pilot
           </button>
-        </nav>
+        </aside>
 
-        <div className="hero-stage" id="top">
-          <div className="hero-copy">
-            <p className="eyebrow">Rank 1 YC build - AI-native service company</p>
-            <h1>Compliance work delivered in 48 hours, with proof attached.</h1>
-            <p>
-              Auditlane is a launch-ready service platform for audit evidence, security
-              questionnaires, and exception memos. Customers send the request. The service engine
-              ships the finished, citation-backed packet.
-            </p>
-            <div className="hero-actions">
+        <section className="workbench">
+          <header className="workbench-top">
+            <div>
+              <span className="eyebrow">AI-native compliance operations</span>
+              <h1>Ship audit packets, not promises.</h1>
+            </div>
+            <div className="top-actions">
+              <button className="button secondary" onClick={showPaidPortal} type="button">
+                Preview portal
+              </button>
               <button className="button primary" onClick={() => startCheckout("pilot")} type="button">
                 Pay for pilot
               </button>
-              <button className="button secondary" onClick={showPaidPortal} type="button">
-                Preview paid portal
-              </button>
-              <a className="button tertiary" href="#market">
-                View launch plan
-              </a>
             </div>
-            <div className="trust-row" aria-label="Trust indicators">
-              <span>Human QA</span>
-              <span>Source citations</span>
-              <span>Outcome pricing</span>
-              <span>Enterprise workflow</span>
-            </div>
-          </div>
+          </header>
 
-          <div className="hero-visual" aria-label="Auditlane service cockpit preview">
-            <div className="glass-top">
-              <span />
-              <span />
-              <span />
-              <strong>Live service run</strong>
-            </div>
-            <div className="run-grid">
-              <article>
-                <span>Revenue in queue</span>
-                <strong>{money(weeklyRevenue)}</strong>
-              </article>
-              <article>
-                <span>Median delivery</span>
-                <strong>48h</strong>
-              </article>
-              <article>
-                <span>Gross margin</span>
-                <strong>74%</strong>
-              </article>
-            </div>
-            <div className="pipeline">
-              {laneCards.map(([title, copy], index) => (
-                <div className="pipeline-card" key={title}>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <strong>{title}</strong>
-                  <p>{copy}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="checkout-zone" id="checkout" aria-label="Payment and onboarding">
-        {purchaseStage === "browse" && (
-          <>
-            <div className="section-heading compact-heading">
-              <div>
-                <span className="section-kicker">Checkout</span>
-                <h2>Pick a paid service package.</h2>
+          <div className="console-grid">
+            <div className="queue-panel">
+              <div className="panel-heading">
+                <span>Live service queue</span>
+                <strong>{cases.length} active</strong>
               </div>
-              <p>
-                These buttons now do real UI work: select a plan, open checkout, and then show the
-                paid customer portal after payment.
-              </p>
-            </div>
-            <div className="plan-grid">
-              {plans.map((plan) => (
-                <article className={plan.id === "managed" ? "plan-card featured" : "plan-card"} key={plan.id}>
-                  <span>{plan.bestFor}</span>
-                  <h3>{plan.name}</h3>
-                  <strong>
-                    {money(plan.price)}
-                    <small> / {plan.cadence}</small>
-                  </strong>
-                  <p>{plan.description}</p>
-                  <ul>
-                    {plan.includes.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                  <button className="plan-button" onClick={() => startCheckout(plan.id)} type="button">
-                    Select {plan.name}
+              <div className="case-stack">
+                {cases.map((item) => (
+                  <button
+                    className={activeCase.id === item.id ? "case-row selected" : "case-row"}
+                    key={item.id}
+                    onClick={() => setActiveCase(item)}
+                    type="button"
+                  >
+                    <span className="case-id">{item.id}</span>
+                    <span className="case-main">
+                      <strong>{item.customer}</strong>
+                      <small>{item.request}</small>
+                    </span>
+                    <span className={statusClass(item.status)}>{item.status}</span>
                   </button>
-                </article>
-              ))}
+                ))}
+              </div>
             </div>
-          </>
-        )}
 
-        {purchaseStage === "checkout" && (
-          <div className="checkout-grid">
-            <div className="checkout-copy">
-              <span className="section-kicker">Secure checkout</span>
+            <div className="focus-panel">
+              <div className="focus-header">
+                <div>
+                  <span>Selected packet</span>
+                  <h2>{activeCase.customer}</h2>
+                </div>
+                <strong>{money(activeCase.value)}</strong>
+              </div>
+
+              <div className="packet-grid">
+                <div>
+                  <span>Buyer</span>
+                  <strong>{activeCase.buyer}</strong>
+                </div>
+                <div>
+                  <span>Due</span>
+                  <strong>{activeCase.due}</strong>
+                </div>
+                <div>
+                  <span>Margin</span>
+                  <strong>{activeCase.margin}%</strong>
+                </div>
+                <div>
+                  <span>Confidence</span>
+                  <strong>{activeCase.confidence}%</strong>
+                </div>
+              </div>
+
+              <div className="risk-line">
+                <span>Risk</span>
+                <strong>{activeCase.risk}</strong>
+              </div>
+
+              <div className="progress-module">
+                <div>
+                  <span>Packet progress</span>
+                  <strong>{activeCase.progress}%</strong>
+                </div>
+                <div className="bar">
+                  <span style={{ width: `${activeCase.progress}%` }} />
+                </div>
+              </div>
+            </div>
+
+            <div className="lane-panel">
+              <div className="panel-heading">
+                <span>Service pipeline</span>
+                <strong>48h SLA</strong>
+              </div>
+              <div className="lane-grid">
+                {lanes.map(([title, copy], index) => (
+                  <article key={title}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <strong>{title}</strong>
+                    <p>{copy}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside className="conversion-rail" id="checkout">
+          {purchaseStage === "browse" && (
+            <div className="conversion-card">
+              <span className="eyebrow">Checkout</span>
+              <h2>Start with a paid packet.</h2>
+              <p>Pick a plan and open checkout. No dead buttons now.</p>
+              <div className="mini-plans">
+                {plans.map((plan) => (
+                  <button
+                    className={plan.id === selectedPlan ? "mini-plan active" : "mini-plan"}
+                    key={plan.id}
+                    onClick={() => setSelectedPlan(plan.id)}
+                    type="button"
+                  >
+                    <span>{plan.name}</span>
+                    <strong>{money(plan.price)}</strong>
+                  </button>
+                ))}
+              </div>
+              <button className="pay-button" onClick={() => startCheckout(selectedPlan)} type="button">
+                Continue to checkout
+              </button>
+            </div>
+          )}
+
+          {purchaseStage === "checkout" && (
+            <form className="checkout-card" onSubmit={(event) => event.preventDefault()}>
+              <span className="eyebrow">Secure checkout</span>
               <h2>Start {selectedPlanData.name}.</h2>
-              <p>
-                This is the production checkout UX. On a real launch, this button should call
-                Stripe Checkout or a Stripe Payment Link. In this static demo, it simulates payment
-                and opens the paid portal.
-              </p>
-              <div className="checkout-summary">
+              <p>{selectedPlanData.description}</p>
+              <div className="receipt-strip">
                 <span>Today</span>
                 <strong>{money(selectedPlanData.price)}</strong>
                 <small>{selectedPlanData.cadence}</small>
               </div>
-            </div>
-
-            <form className="payment-card" onSubmit={(event) => event.preventDefault()}>
               <label>
                 Company
                 <input
@@ -414,65 +449,58 @@ export default function App() {
                 Change plan
               </button>
             </form>
-          </div>
-        )}
+          )}
 
-        {purchaseStage === "paid" && (
-          <div className="success-panel" id="portal">
-            <div>
-              <span className="section-kicker">Payment complete</span>
+          {purchaseStage === "paid" && (
+            <div className="paid-card" id="portal">
+              <span className="eyebrow">Payment complete</span>
               <h2>Welcome to your Auditlane portal.</h2>
-              <p>
-                {companyName || "Your company"} is now set up on {selectedPlanData.name}. The
-                first evidence packet is ready for intake, QA routing, and final delivery.
-              </p>
+              <p>{companyName} is set up on {selectedPlanData.name}.</p>
+              <div className="receipt-strip light">
+                <span>Receipt</span>
+                <strong>{money(selectedPlanData.price)}</strong>
+                <small>{buyerEmail}</small>
+              </div>
+              <button className="pay-button" onClick={() => startCheckout("managed")} type="button">
+                Upgrade plan
+              </button>
             </div>
-            <div className="receipt-card">
-              <span>Receipt</span>
-              <strong>{money(selectedPlanData.price)}</strong>
-              <small>{buyerEmail}</small>
-            </div>
-          </div>
-        )}
+          )}
+        </aside>
       </section>
 
       {purchaseStage === "paid" && (
-        <section className="paid-portal" aria-label="Paid customer portal">
-          <div className="portal-header">
+        <section className="portal-section" aria-label="Paid customer portal">
+          <div className="section-heading">
             <div>
               <span className="section-kicker">Customer portal</span>
               <h2>What the app looks like after paying.</h2>
             </div>
-            <button className="button primary" onClick={() => startCheckout("managed")} type="button">
-              Upgrade plan
-            </button>
+            <p>The buyer sees intake, upload, SLA, packet progress, and clear next actions.</p>
           </div>
 
           <div className="portal-grid">
-            <div className="portal-card upload-card">
+            <div className="portal-main">
               <span>Step 1</span>
               <h3>Upload your request</h3>
               <div className="dropzone">
                 <strong>Drop questionnaire or audit request</strong>
                 <small>PDF, XLSX, DOCX, CSV, screenshots, policy links</small>
               </div>
-              <button className="portal-action" type="button">
-                Add sample request
-              </button>
+              <button className="portal-action" type="button">Add sample request</button>
             </div>
-            <div className="portal-card">
+            <div className="portal-stat">
               <span>Service SLA</span>
-              <h3>48-hour delivery clock</h3>
-              <div className="sla-ring">47:58</div>
-              <p>Timer starts when source evidence is attached.</p>
+              <strong>47:58</strong>
+              <p>Timer starts after evidence is attached.</p>
             </div>
-            <div className="portal-card">
+            <div className="portal-stat">
               <span>Current packet</span>
-              <h3>Security questionnaire</h3>
-              <div className="portal-progress">
-                <i style={{ width: "24%" }} />
+              <strong>24%</strong>
+              <div className="bar">
+                <span style={{ width: "24%" }} />
               </div>
-              <p>Intake opened. Evidence mapping begins after upload.</p>
+              <p>Intake opened. Evidence mapping begins next.</p>
             </div>
           </div>
 
@@ -488,14 +516,13 @@ export default function App() {
         </section>
       )}
 
-      <section className="workspace" id="product" aria-label="Product workspace">
-        <div className="section-kicker">Product</div>
+      <section className="workspace-section" id="product" aria-label="Product workspace">
         <div className="section-heading">
-          <h2>Not a homepage. A working service command center.</h2>
-          <p>
-            This is what the company operates: intake, agent work, evidence confidence, QA routing,
-            customer ROI, and GTM execution in one launchable interface.
-          </p>
+          <div>
+            <span className="section-kicker">Product</span>
+            <h2>Operator controls, buyer ROI, and GTM system.</h2>
+          </div>
+          <p>Switch views to inspect the live service business from ops, customer, and market angles.</p>
         </div>
 
         <div className="workspace-tabs" role="tablist" aria-label="Workspace view">
@@ -523,100 +550,23 @@ export default function App() {
         </div>
 
         {workspace === "ops" && (
-          <div className="ops-grid">
-            <div className="panel queue">
-              <div className="panel-heading">
-                <span>Live queue</span>
-                <strong>4 active packets</strong>
-              </div>
-              {cases.map((item) => (
-                <button
-                  className={activeCase.id === item.id ? "case-row selected" : "case-row"}
-                  key={item.id}
-                  onClick={() => setActiveCase(item)}
-                  type="button"
-                >
-                  <span className="case-id">{item.id}</span>
-                  <span className="case-main">
-                    <strong>{item.customer}</strong>
-                    <small>{item.request}</small>
-                  </span>
-                  <span className={statusClass(item.status)}>{item.status}</span>
-                </button>
-              ))}
-            </div>
-
-            <div className="panel detail">
-              <div className="panel-heading">
-                <span>Selected packet</span>
-                <strong>{activeCase.customer}</strong>
-              </div>
-              <div className="packet-summary">
-                <div>
-                  <span>Buyer</span>
-                  <strong>{activeCase.buyer}</strong>
-                </div>
-                <div>
-                  <span>Due</span>
-                  <strong>{activeCase.due}</strong>
-                </div>
-                <div>
-                  <span>Packet value</span>
-                  <strong>{money(activeCase.value)}</strong>
-                </div>
-                <div>
-                  <span>Margin</span>
-                  <strong>{activeCase.margin}%</strong>
-                </div>
-              </div>
-              <div className="progress-block">
-                <div>
-                  <span>Progress</span>
-                  <strong>{activeCase.progress}%</strong>
-                </div>
+          <div className="ops-cards">
+            {cases.map((item) => (
+              <article key={item.id}>
+                <span>{item.id}</span>
+                <strong>{item.customer}</strong>
+                <p>{item.request}</p>
                 <div className="bar">
-                  <span style={{ width: `${activeCase.progress}%` }} />
+                  <span style={{ width: `${item.progress}%` }} />
                 </div>
-              </div>
-              <div className="risk-card">
-                <span>Open risk</span>
-                <strong>{activeCase.risk}</strong>
-              </div>
-            </div>
-
-            <div className="panel evidence">
-              <div className="panel-heading">
-                <span>Evidence confidence</span>
-                <strong>{activeCase.confidence}%</strong>
-              </div>
-              <div className="evidence-list">
-                <div>
-                  <span>Drive</span>
-                  <strong>Vendor evidence folder</strong>
-                  <small>97%</small>
-                </div>
-                <div>
-                  <span>Jira</span>
-                  <strong>Access review ticket</strong>
-                  <small>93%</small>
-                </div>
-                <div>
-                  <span>GitHub</span>
-                  <strong>Change approval logs</strong>
-                  <small>91%</small>
-                </div>
-              </div>
-            </div>
+              </article>
+            ))}
           </div>
         )}
 
         {workspace === "roi" && (
           <div className="roi-grid" id="roi">
-            <div className="panel calculator">
-              <div className="panel-heading">
-                <span>Buyer calculator</span>
-                <strong>Monthly payback</strong>
-              </div>
+            <div className="calculator">
               <label>
                 <span>Monthly compliance requests</span>
                 <input
@@ -652,17 +602,10 @@ export default function App() {
                 <strong>{money(loadedCost)}</strong>
               </label>
             </div>
-            <div className="panel savings">
+            <div className="savings">
               <span>Estimated monthly savings</span>
               <strong>{money(savings)}</strong>
-              <p>
-                Manual cost {money(manualCost)} minus Auditlane service fee{" "}
-                {money(auditlaneCost)}.
-              </p>
-              <div className="cost-bars" aria-hidden="true">
-                <i style={{ height: "100%" }} />
-                <i style={{ height: `${Math.max(16, (auditlaneCost / manualCost) * 100)}%` }} />
-              </div>
+              <p>Manual cost {money(manualCost)} minus Auditlane service fee {money(auditlaneCost)}.</p>
             </div>
           </div>
         )}
@@ -679,28 +622,22 @@ export default function App() {
         )}
       </section>
 
-      <section className="service-map" aria-label="Auditlane service map">
+      <section className="system-section" aria-label="Auditlane service map">
         <div>
           <span className="section-kicker">System</span>
-          <h2>Every output carries source-backed trust.</h2>
-          <p>
-            The business becomes valuable when the evidence graph and QA history compound. That is
-            the difference between a normal agency and an AI-native service company.
-          </p>
+          <h2>Every delivered answer has a source trail.</h2>
+          <p>The design now treats Auditlane as a real operating product: evidence graph, agent work, QA, and final delivery.</p>
         </div>
         <img src="./brand/auditlane-service-map.svg" alt="Auditlane service workflow map" />
       </section>
 
-      <section className="launch" id="playbook" aria-label="Launch checklist">
+      <section className="launch-section" id="playbook" aria-label="Launch checklist">
         <div className="section-heading">
           <div>
             <span className="section-kicker">Founder OS</span>
-            <h2>Launch checklist for the first 30 days.</h2>
+            <h2>30-day execution board.</h2>
           </div>
-          <p>
-            YC does not need a perfect giant company on day one. It needs speed, truth, paid users,
-            and a wedge that can become huge.
-          </p>
+          <p>Click items as you finish them. YC wants speed, paid users, and proof.</p>
         </div>
 
         <div className="checklist">
@@ -713,9 +650,7 @@ export default function App() {
             >
               <span className="checkmark">{completed.includes(item.label) ? "OK" : "+"}</span>
               <strong>{item.label}</strong>
-              <small>
-                {item.owner} - {item.week}
-              </small>
+              <small>{item.owner} - {item.week}</small>
             </button>
           ))}
         </div>
@@ -723,8 +658,8 @@ export default function App() {
 
       <footer className="footer">
         <strong>Auditlane</strong>
-        <span>Built for YC-style speed: sell the service, learn the workflow, productize the engine.</span>
-        <a href="mailto:founder@auditlane.ai">founder@auditlane.ai</a>
+        <span>AI-native compliance operations, designed as a paid service from day one.</span>
+        <button className="footer-button" onClick={() => startCheckout("pilot")} type="button">Start pilot</button>
       </footer>
     </main>
   );
