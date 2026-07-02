@@ -125,7 +125,9 @@ button {
 .nav-cta,
 .button {
   align-items: center;
+  border: 0;
   border-radius: 8px;
+  cursor: pointer;
   display: inline-flex;
   font-size: 14px;
   font-weight: 850;
@@ -151,6 +153,12 @@ button {
   background: var(--paper-2);
   border: 1px solid var(--line);
   color: var(--ink);
+}
+
+.button.tertiary {
+  background: #eaf7ef;
+  border: 1px solid rgba(8, 118, 95, 0.24);
+  color: var(--mint-dark);
 }
 
 .hero-stage {
@@ -685,6 +693,400 @@ button {
   margin: 38px 0 0;
 }
 
+.checkout-zone,
+.paid-portal {
+  background: rgba(255, 250, 240, 0.9);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin: 18px auto;
+  max-width: 1440px;
+  padding: clamp(18px, 3vw, 34px);
+}
+
+.compact-heading {
+  align-items: center;
+}
+
+.plan-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.plan-card {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  min-height: 520px;
+  padding: 20px;
+}
+
+.plan-card.featured {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper-2);
+}
+
+.plan-card > span {
+  color: var(--mint-dark);
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.plan-card.featured > span {
+  color: var(--mint);
+}
+
+.plan-card h3 {
+  font-size: 30px;
+  font-weight: 950;
+  margin: 24px 0 0;
+}
+
+.plan-card > strong {
+  display: block;
+  font-size: clamp(34px, 5vw, 54px);
+  font-weight: 950;
+  line-height: 1;
+  margin-top: 18px;
+}
+
+.plan-card > strong small {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.plan-card.featured > strong small,
+.plan-card.featured p,
+.plan-card.featured li {
+  color: #c6d5cd;
+}
+
+.plan-card p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 18px 0;
+}
+
+.plan-card ul {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+}
+
+.plan-card li {
+  color: #44524b;
+  font-size: 14px;
+  line-height: 1.4;
+  padding-left: 24px;
+  position: relative;
+}
+
+.plan-card li::before {
+  color: var(--mint-dark);
+  content: "OK";
+  font-size: 10px;
+  font-weight: 950;
+  left: 0;
+  position: absolute;
+  top: 2px;
+}
+
+.plan-card.featured li::before {
+  color: var(--mint);
+}
+
+.plan-button,
+.pay-button,
+.ghost-button,
+.portal-action {
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 950;
+  min-height: 48px;
+}
+
+.plan-button {
+  background: var(--ink);
+  border: 0;
+  color: var(--paper-2);
+  margin-top: auto;
+}
+
+.plan-card.featured .plan-button {
+  background: var(--mint);
+  color: var(--ink);
+}
+
+.checkout-grid,
+.success-panel {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(380px, 0.7fr);
+}
+
+.checkout-copy,
+.payment-card,
+.receipt-card,
+.portal-card,
+.portal-steps article {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.checkout-copy {
+  padding: clamp(24px, 4vw, 44px);
+}
+
+.checkout-copy h2,
+.success-panel h2,
+.portal-header h2 {
+  font-size: clamp(36px, 5vw, 68px);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 0.95;
+  margin: 14px 0;
+}
+
+.checkout-copy p,
+.success-panel p,
+.portal-card p,
+.portal-steps p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.checkout-summary {
+  align-items: end;
+  background: var(--ink);
+  border-radius: 8px;
+  color: var(--paper-2);
+  display: grid;
+  gap: 8px;
+  margin-top: 28px;
+  min-height: 170px;
+  padding: 20px;
+}
+
+.checkout-summary span,
+.receipt-card span,
+.portal-card > span,
+.portal-steps span {
+  color: var(--mint);
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.checkout-summary strong,
+.receipt-card strong {
+  display: block;
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 950;
+  line-height: 0.95;
+}
+
+.checkout-summary small,
+.receipt-card small {
+  color: #c6d5cd;
+  display: block;
+  font-size: 14px;
+}
+
+.payment-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.payment-card label {
+  color: #34433c;
+  display: grid;
+  font-size: 13px;
+  font-weight: 900;
+  gap: 8px;
+}
+
+.payment-card input {
+  background: #fbf4e7;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  min-height: 50px;
+  padding: 0 14px;
+  width: 100%;
+}
+
+.card-row {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pay-button {
+  background: var(--mint-dark);
+  border: 0;
+  color: white;
+  margin-top: 8px;
+}
+
+.pay-button:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
+
+.ghost-button {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.success-panel {
+  align-items: stretch;
+}
+
+.success-panel > div:first-child {
+  background: var(--ink);
+  border-radius: 8px;
+  color: var(--paper-2);
+  padding: clamp(24px, 4vw, 44px);
+}
+
+.success-panel p {
+  color: #c6d5cd;
+}
+
+.receipt-card {
+  align-content: end;
+  display: grid;
+  min-height: 260px;
+  padding: 22px;
+}
+
+.receipt-card span {
+  color: var(--mint-dark);
+}
+
+.receipt-card small {
+  color: var(--muted);
+}
+
+.paid-portal {
+  background: var(--ink);
+  color: var(--paper-2);
+}
+
+.portal-header {
+  align-items: end;
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.portal-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1.2fr 0.8fr 0.8fr;
+}
+
+.portal-card {
+  background: rgba(255, 250, 240, 0.06);
+  border-color: rgba(255, 250, 240, 0.16);
+  min-height: 300px;
+  padding: 18px;
+}
+
+.portal-card h3 {
+  font-size: 26px;
+  margin: 18px 0;
+}
+
+.dropzone {
+  align-items: center;
+  border: 1px dashed rgba(255, 250, 240, 0.35);
+  border-radius: 8px;
+  display: grid;
+  min-height: 126px;
+  padding: 18px;
+}
+
+.dropzone strong,
+.dropzone small {
+  display: block;
+}
+
+.dropzone small,
+.portal-card p {
+  color: #bdcbc4;
+}
+
+.portal-action {
+  background: var(--mint);
+  border: 0;
+  color: var(--ink);
+  margin-top: 14px;
+  width: 100%;
+}
+
+.sla-ring {
+  align-items: center;
+  aspect-ratio: 1;
+  background: conic-gradient(var(--mint) 0 82%, rgba(255, 250, 240, 0.14) 82% 100%);
+  border-radius: 999px;
+  color: var(--ink);
+  display: flex;
+  font-size: clamp(32px, 5vw, 54px);
+  font-weight: 950;
+  justify-content: center;
+  margin: 24px auto;
+  max-width: 190px;
+}
+
+.portal-progress {
+  background: rgba(255, 250, 240, 0.16);
+  border-radius: 999px;
+  height: 14px;
+  overflow: hidden;
+}
+
+.portal-progress i {
+  background: var(--mint);
+  display: block;
+  height: 100%;
+}
+
+.portal-steps {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.portal-steps article {
+  background: rgba(255, 250, 240, 0.06);
+  border-color: rgba(255, 250, 240, 0.16);
+  min-height: 190px;
+  padding: 18px;
+}
+
+.portal-steps strong {
+  display: block;
+  font-size: 20px;
+  margin: 28px 0 10px;
+}
+
 .service-map {
   display: grid;
   gap: 24px;
@@ -771,7 +1173,9 @@ button {
   .hero-stage,
   .ops-grid,
   .roi-grid,
-  .service-map {
+  .service-map,
+  .checkout-grid,
+  .success-panel {
     grid-template-columns: 1fr;
   }
 
@@ -781,7 +1185,10 @@ button {
   }
 
   .market-grid,
-  .checklist {
+  .checklist,
+  .plan-grid,
+  .portal-grid,
+  .portal-steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -792,7 +1199,8 @@ button {
   }
 
   .nav,
-  .footer {
+  .footer,
+  .portal-header {
     align-items: stretch;
     flex-direction: column;
   }
@@ -827,7 +1235,11 @@ button {
   .market-grid,
   .checklist,
   .evidence-list,
-  .packet-summary {
+  .packet-summary,
+  .plan-grid,
+  .portal-grid,
+  .portal-steps,
+  .card-row {
     grid-template-columns: 1fr;
   }
 

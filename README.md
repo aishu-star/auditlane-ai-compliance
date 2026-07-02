@@ -59,10 +59,24 @@ http://localhost:3002/
 
 ```bash
 npm run lint
+npm test
 npm run build
 ```
 
 The static site is emitted to `dist/`.
+
+## Payment Flow
+
+The app includes a complete buyer UX:
+
+1. choose a service plan;
+2. open checkout;
+3. simulate payment;
+4. enter the paid customer portal.
+
+Because GitHub Pages is static hosting, it cannot securely process real card
+payments by itself. For launch, connect the `Pay` button in `src/App.tsx` to
+Stripe Payment Links or a backend-created Stripe Checkout Session.
 
 ## GitHub Pages Deployment
 

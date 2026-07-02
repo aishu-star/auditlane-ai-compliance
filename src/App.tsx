@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 
 type Workspace = "ops" | "roi" | "market";
 type CaseStatus = "In progress" | "Needs QA" | "Ready" | "Escalated";
+type PlanId = "pilot" | "managed" | "enterprise";
+type PurchaseStage = "browse" | "checkout" | "paid";
 
 type ServiceCase = {
   id: string;
@@ -21,6 +23,16 @@ type ChecklistItem = {
   label: string;
   owner: string;
   week: string;
+};
+
+type Plan = {
+  id: PlanId;
+  name: string;
+  price: number;
+  cadence: string;
+  description: string;
+  bestFor: string;
+  includes: string[];
 };
 
 const cases: ServiceCase[] = [
@@ -101,6 +113,58 @@ const checklist: ChecklistItem[] = [
   { label: "Publish customer ROI case study", owner: "Growth", week: "Week 4" },
 ];
 
+const plans: Plan[] = [
+  {
+    id: "pilot",
+    name: "Paid Pilot",
+    price: 1500,
+    cadence: "one packet",
+    description: "The fastest way to unblock one enterprise review and prove value.",
+    bestFor: "First questionnaire or urgent audit evidence ask",
+    includes: [
+      "48-hour security questionnaire turnaround",
+      "Source-backed answer packet",
+      "Human QA on every answer",
+      "Customer ROI summary",
+    ],
+  },
+  {
+    id: "managed",
+    name: "Managed Ops",
+    price: 8000,
+    cadence: "per month",
+    description: "A monthly compliance desk for teams with repeat enterprise reviews.",
+    bestFor: "10-30 monthly requests",
+    includes: [
+      "Unlimited intake queue",
+      "SOC 2, HIPAA, ISO, GDPR coverage",
+      "Dedicated compliance operator",
+      "Reusable answer bank",
+    ],
+  },
+  {
+    id: "enterprise",
+    name: "Enterprise Desk",
+    price: 18000,
+    cadence: "per month",
+    description: "High-volume service operations with custom workflow and SLA controls.",
+    bestFor: "Revenue teams with heavy enterprise sales motion",
+    includes: [
+      "Priority SLA",
+      "Custom evidence graph",
+      "Legal and security routing",
+      "Quarterly control refresh",
+    ],
+  },
+];
+
+const portalSteps = [
+  ["Upload request", "Drop in questionnaire, audit ask, policy docs, and prior answers."],
+  ["Connect sources", "Invite security, sales, legal, and engineering owners to add evidence."],
+  ["Review draft", "Approve answers, inspect citations, and route exceptions before delivery."],
+  ["Ship packet", "Download final packet and share the customer-facing audit trail."],
+];
+
 function statusClass(status: CaseStatus) {
   if (status === "Ready") return "status ready";
   if (status === "Needs QA") return "status qa";
@@ -119,6 +183,11 @@ function money(value: number) {
 export default function App() {
   const [workspace, setWorkspace] = useState<Workspace>("ops");
   const [activeCase, setActiveCase] = useState(cases[0]);
+  const [selectedPlan, setSelectedPlan] = useState<PlanId>("pilot");
+  const [purchaseStage, setPurchaseStage] = useState<PurchaseStage>("browse");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [companyName, setCompanyName] = useState("Northstar Health");
+  const [buyerEmail, setBuyerEmail] = useState("security@northstar.example");
   const [requestCount, setRequestCount] = useState(28);
   const [manualHours, setManualHours] = useState(10);
   const [loadedCost, setLoadedCost] = useState(150);
@@ -132,6 +201,7 @@ export default function App() {
   const manualCost = requestCount * manualHours * loadedCost;
   const auditlaneCost = requestCount * 620;
   const savings = manualCost - auditlaneCost;
+  const selectedPlanData = plans.find((plan) => plan.id === selectedPlan) ?? plans[0];
 
   function toggleChecklist(label: string) {
     setCompleted((current) =>
@@ -139,6 +209,31 @@ export default function App() {
         ? current.filter((item) => item !== label)
         : [...current, label],
     );
+  }
+
+  function scrollToSection(id: string) {
+    window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView?.({ behavior: "smooth", block: "start" });
+    }, 0);
+  }
+
+  function startCheckout(plan: PlanId) {
+    setSelectedPlan(plan);
+    setPurchaseStage("checkout");
+    scrollToSection("checkout");
+  }
+
+  function showPaidPortal() {
+    setPurchaseStage("paid");
+    scrollToSection("portal");
+  }
+
+  function completePayment() {
+    setIsProcessing(true);
+    window.setTimeout(() => {
+      setIsProcessing(false);
+      showPaidPortal();
+    }, 350);
   }
 
   return (
@@ -158,9 +253,9 @@ export default function App() {
             <a href="#market">Market</a>
             <a href="#playbook">Playbook</a>
           </div>
-          <a className="nav-cta" href="mailto:founder@auditlane.ai">
+          <button className="nav-cta" onClick={() => startCheckout("pilot")} type="button">
             Book pilot
-          </a>
+          </button>
         </nav>
 
         <div className="hero-stage" id="top">
@@ -173,10 +268,13 @@ export default function App() {
               ships the finished, citation-backed packet.
             </p>
             <div className="hero-actions">
-              <a className="button primary" href="#product">
-                Open command center
-              </a>
-              <a className="button secondary" href="#market">
+              <button className="button primary" onClick={() => startCheckout("pilot")} type="button">
+                Pay for pilot
+              </button>
+              <button className="button secondary" onClick={showPaidPortal} type="button">
+                Preview paid portal
+              </button>
+              <a className="button tertiary" href="#market">
                 View launch plan
               </a>
             </div>
@@ -221,6 +319,174 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      <section className="checkout-zone" id="checkout" aria-label="Payment and onboarding">
+        {purchaseStage === "browse" && (
+          <>
+            <div className="section-heading compact-heading">
+              <div>
+                <span className="section-kicker">Checkout</span>
+                <h2>Pick a paid service package.</h2>
+              </div>
+              <p>
+                These buttons now do real UI work: select a plan, open checkout, and then show the
+                paid customer portal after payment.
+              </p>
+            </div>
+            <div className="plan-grid">
+              {plans.map((plan) => (
+                <article className={plan.id === "managed" ? "plan-card featured" : "plan-card"} key={plan.id}>
+                  <span>{plan.bestFor}</span>
+                  <h3>{plan.name}</h3>
+                  <strong>
+                    {money(plan.price)}
+                    <small> / {plan.cadence}</small>
+                  </strong>
+                  <p>{plan.description}</p>
+                  <ul>
+                    {plan.includes.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <button className="plan-button" onClick={() => startCheckout(plan.id)} type="button">
+                    Select {plan.name}
+                  </button>
+                </article>
+              ))}
+            </div>
+          </>
+        )}
+
+        {purchaseStage === "checkout" && (
+          <div className="checkout-grid">
+            <div className="checkout-copy">
+              <span className="section-kicker">Secure checkout</span>
+              <h2>Start {selectedPlanData.name}.</h2>
+              <p>
+                This is the production checkout UX. On a real launch, this button should call
+                Stripe Checkout or a Stripe Payment Link. In this static demo, it simulates payment
+                and opens the paid portal.
+              </p>
+              <div className="checkout-summary">
+                <span>Today</span>
+                <strong>{money(selectedPlanData.price)}</strong>
+                <small>{selectedPlanData.cadence}</small>
+              </div>
+            </div>
+
+            <form className="payment-card" onSubmit={(event) => event.preventDefault()}>
+              <label>
+                Company
+                <input
+                  onChange={(event) => setCompanyName(event.target.value)}
+                  placeholder="Company name"
+                  type="text"
+                  value={companyName}
+                />
+              </label>
+              <label>
+                Work email
+                <input
+                  onChange={(event) => setBuyerEmail(event.target.value)}
+                  placeholder="security@company.com"
+                  type="email"
+                  value={buyerEmail}
+                />
+              </label>
+              <label>
+                Card number
+                <input placeholder="4242 4242 4242 4242" inputMode="numeric" />
+              </label>
+              <div className="card-row">
+                <label>
+                  Expiry
+                  <input placeholder="08 / 28" />
+                </label>
+                <label>
+                  CVC
+                  <input placeholder="123" inputMode="numeric" />
+                </label>
+              </div>
+              <button className="pay-button" disabled={isProcessing} onClick={completePayment} type="button">
+                {isProcessing ? "Processing..." : `Pay ${money(selectedPlanData.price)}`}
+              </button>
+              <button className="ghost-button" onClick={() => setPurchaseStage("browse")} type="button">
+                Change plan
+              </button>
+            </form>
+          </div>
+        )}
+
+        {purchaseStage === "paid" && (
+          <div className="success-panel" id="portal">
+            <div>
+              <span className="section-kicker">Payment complete</span>
+              <h2>Welcome to your Auditlane portal.</h2>
+              <p>
+                {companyName || "Your company"} is now set up on {selectedPlanData.name}. The
+                first evidence packet is ready for intake, QA routing, and final delivery.
+              </p>
+            </div>
+            <div className="receipt-card">
+              <span>Receipt</span>
+              <strong>{money(selectedPlanData.price)}</strong>
+              <small>{buyerEmail}</small>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {purchaseStage === "paid" && (
+        <section className="paid-portal" aria-label="Paid customer portal">
+          <div className="portal-header">
+            <div>
+              <span className="section-kicker">Customer portal</span>
+              <h2>What the app looks like after paying.</h2>
+            </div>
+            <button className="button primary" onClick={() => startCheckout("managed")} type="button">
+              Upgrade plan
+            </button>
+          </div>
+
+          <div className="portal-grid">
+            <div className="portal-card upload-card">
+              <span>Step 1</span>
+              <h3>Upload your request</h3>
+              <div className="dropzone">
+                <strong>Drop questionnaire or audit request</strong>
+                <small>PDF, XLSX, DOCX, CSV, screenshots, policy links</small>
+              </div>
+              <button className="portal-action" type="button">
+                Add sample request
+              </button>
+            </div>
+            <div className="portal-card">
+              <span>Service SLA</span>
+              <h3>48-hour delivery clock</h3>
+              <div className="sla-ring">47:58</div>
+              <p>Timer starts when source evidence is attached.</p>
+            </div>
+            <div className="portal-card">
+              <span>Current packet</span>
+              <h3>Security questionnaire</h3>
+              <div className="portal-progress">
+                <i style={{ width: "24%" }} />
+              </div>
+              <p>Intake opened. Evidence mapping begins after upload.</p>
+            </div>
+          </div>
+
+          <div className="portal-steps">
+            {portalSteps.map(([title, copy], index) => (
+              <article key={title}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{title}</strong>
+                <p>{copy}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="workspace" id="product" aria-label="Product workspace">
         <div className="section-kicker">Product</div>
